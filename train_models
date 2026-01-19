@@ -1,0 +1,41 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import classification_report, roc_auc_score
+from sklearn.svm import SVC
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
+
+
+
+# load dataset
+
+df =pd.read_csv("iomt_dataset.csv")
+
+#encode IPs
+
+le=LabelEncoder()
+df["src_ip"]= le.fit_transform(df["src_ip"].astype(str))
+df["dst_ip"]= le.fit_transform(df["dst_ip"].astype(str))
+
+X = df[["packet_size","src_ip","dst_ip","time_delta"]]
+Y= df["label"]
+
+# train test split
+X_train, X_test,Y_train,Y_test = train_test_split(X,Y,test_size=0.3)
+
+#Models
+
+models={
+	"SVM": SVC(probability=True),
+	"Random Forest": RandomForestClassifier(),
+	"KNN": KNeighborsClassifier()
+}
+for name, model in models.items():
+	model.fit(X_train, Y_train)
+	Y_pred = model.predict(X_test)
+	Y_prob = model.predict_proba(X_test)[:,1]
+	print(f"\n ===={name}=======")
+	print(classification_report(Y_test,Y_pred))
+	print("ROC-AUC:", roc_auc_score(Y_test,Y_prob))
+
