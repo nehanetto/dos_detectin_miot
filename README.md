@@ -1,9 +1,12 @@
 # dos_detectin_miot
 Introduction: 
 This Configuration Manual documents the complete technical setup used to develop, deploy, and evaluate the IoMT Intrusion Detection Framework combining Suricata IDS, a custom IoMT sensor simulation, packet capture, and machine-learning-based anomaly detection.
+
 It details every step required to reproduce the environment across multiple virtual machines, including network configuration, software dependencies, sensor data generation, attack simulation, and ML pipeline execution.
+
 The manual is structured to ensure that another researcher or examiner can fully rebuild the system from scratch without ambiguity.
-	Virtual Machine Setup:
+
+Virtual Machine Setup:
 Two Virtual Machines (VMs) were configured in VirtualBox to simulate a healthcare IoMT network:
 	IDS VM
 •	OS: Ubuntu 20.04 LTS
@@ -12,7 +15,9 @@ o	Suricata IDS
 o	tshark / wireshark-cli
 o	Python3, pip, scikit-learn, pandas
 •	Assigned IP:
+
 Captured using ip a
+
 •	enp0s3: inet 192.168.0.245  
  Sensor VM
 •	OS: Ubuntu 20.04 LTS
@@ -25,8 +30,9 @@ o	hping3 (for SYN flooding)
 Suricata Installation & Configuration (IDS VM)
 
 Install Suricata
-sudo apt update
-sudo apt install suricata -y
+
+	sudo apt update
+	sudo apt install suricata -y
 Enable Real-Time Logging
 Suricata logs stored at:
   /var/log/suricata/fast.log
@@ -126,7 +132,7 @@ These results are included in Section 6.5 of the dissertation.
 │── suricata_rules/
 │── README.md
 
-	 Reproducibility Notes
+Reproducibility Notes
  Ensure Both VMs Are Reachable
 Use:
 ping 192.168.0.245
@@ -138,12 +144,12 @@ ping 192.168.0.29
 Keep Clocks in Sync
 VM clock drift can distort time-delta features.
 
-	Troubleshooting
+Troubleshooting
 Issue	Cause	Fix
 No Suricata alerts	Wrong port or rule disabled	Restart Suricata, check rules
 Sensor script not sending	Firewall or wrong IP	Update destination IP
 ML accuracy too low	Imbalanced dataset	Oversampling / feature tuning
 pcap empty	Wrong interface	Run ip a to verify interface name
 
-	Conclusion
-This manual documents all configurations required to reproduce the full IDS pipeline—from IoMT sensor simulation to Suricata detection and machine-learning model evaluation. It enables examiners and researchers to validate system behaviour under both benign and attack conditions.
+Conclusion
+All configurations required to reproduce the full IDS pipeline—from IoMT sensor simulation to Suricata detection and machine-learning model evaluation. It enables examiners and researchers to validate system behaviour under both benign and attack conditions.
