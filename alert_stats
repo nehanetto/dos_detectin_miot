@@ -1,0 +1,35 @@
+import re
+import csv
+
+#path to suricata fast.log
+log_file= "/var/log/suricata/fast.log"
+
+#alert counters
+
+dos_count =0
+retrans_count =0 
+fin_count =0
+
+#read and process the log file 
+with open(log_file,"r") as f:
+	for line in f:
+# count dos alerts( your custom rule)
+
+		if "Iomt Dos" in line or "HIgh SYN Rate" in line:
+			dos_count+=1
+# count excessiv	e retransmissions
+
+		if "excessive retransmissions" in line:
+			retrans_count +=1 
+#count fin out
+
+		if "FIN out of window" in line:
+			fin_count+=1
+
+print("\n======= SURICATA ALERT SUMMARY====")
+print(f"Dos Alerts (Hight SYN Rate):{dos_count}")
+print(f"excessive Retransmission:{retrans_count}")
+print(f"FIN OUt-of-window ALerts:{fin_count}")
+
+print("============================================\n")
+
