@@ -14,8 +14,7 @@ o	Python3, pip, scikit-learn, pandas
 •	Assigned IP:
 Captured using ip a
 •	enp0s3: inet 192.168.0.245  
- 
-	Sensor VM
+ Sensor VM
 •	OS: Ubuntu 20.04 LTS
 •	Tools Installed:
 o	Python3
@@ -28,12 +27,12 @@ Suricata Installation & Configuration (IDS VM)
 Install Suricata
 sudo apt update
 sudo apt install suricata -y
-
-	Enable Real-Time Logging
+Enable Real-Time Logging
 Suricata logs stored at:
-/var/log/suricata/fast.log
+  /var/log/suricata/fast.log
 To view logs in real time:
-sudo tail -f /var/log/suricata/fast.log
+
+ 	sudo tail -f /var/log/suricata/fast.log
 
  Restart Suricata
 
@@ -56,7 +55,8 @@ This script generates continuous benign traffic to the IDS VM.
 To evaluate IDS behaviour under stress, a SYN-Flood attack was launched targeting the MQTT broker port (1883).
 
 SYN Flood Command
-sudo hping3 -S --flood -p 1883 192.168.0.245
+		
+		sudo hping3 -S --flood -p 1883 192.168.0.245
 Output (included as Figure):
 11207 packets transmitted, 0 received, 100% packet loss
 Suricata triggered alerts immediately.
@@ -65,7 +65,8 @@ Suricata Alert Summary Script (IDS VM)
 A custom Python script (alert_stats.py) was developed to parse Suricata logs and summarise alerts.
 
   Run Script
-sudo python3 alert_stats.py
+	
+	sudo python3 alert_stats.py
 Output (Figure for Experiment 3):
 ====== SURICATA ALERT SUMMARY ======
 DoS Alerts (High SYN Rate): 6
@@ -74,9 +75,11 @@ FIN Out-of-window Alerts: 2
 
 
 Packet Capture & Feature Extraction
+	 
 	 Capture Packets
 Using tshark:
 sudo tshark -i enp0s3 -w capture.pcap
+	
 	Extract Features for ML
 A custom extraction script converts PCAP to CSV:
 Features extracted:
@@ -89,17 +92,21 @@ Models evaluated:
 •	Support Vector Classifier (SVC)
 •	Random Forest
 •	k-Nearest Neighbour (k-NN)
-	 Training Script: train_models.py
+	 Training Script: 
+	  	
+		train_models.py
 Important components:
 Load Dataset
 df = pd.read_csv("iomt_dataset.csv")
 Encode IPs
-le = LabelEncoder()
-df["src_ip"] = le.fit_transform(df["src_ip"].astype(str))
-df["dst_ip"] = le.fit_transform(df["dst_ip"].astype(str))
+
+	le = LabelEncoder()
+	df["src_ip"] = le.fit_transform(df["src_ip"].astype(str))
+	df["dst_ip"] = le.fit_transform(df["dst_ip"].astype(str))
 Feature Selection
-X = df[["packet_size","src_ip","dst_ip","time_delta"]]
-Y = df["label"]
+
+	X = df[["packet_size","src_ip","dst_ip","time_delta"]]
+	Y = df["label"]
 Train/Test Split
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.3)
 8.1.1	8.2 Results Summary Example (Figure)
@@ -125,8 +132,9 @@ Use:
 ping 192.168.0.245
 ping 192.168.0.29
  Reset Suricata Logs Before Each Test
-sudo rm /var/log/suricata/fast.log
-sudo systemctl restart suricata
+
+	sudo rm /var/log/suricata/fast.log
+	sudo systemctl restart suricata
 Keep Clocks in Sync
 VM clock drift can distort time-delta features.
 
