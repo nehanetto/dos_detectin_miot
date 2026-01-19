@@ -1,0 +1,36 @@
+import subprocess
+import pandas as pd
+
+def extract_features(pcap_file):
+	command = [
+		"tshark","-r", pcap_file,
+		"-T","fields",
+		"-e","frame.len",
+		"-e","ip.src",
+		"-e","ip.dst",
+		"-e","frame.time_delta"
+	]
+	output = subprocess.check_output(command).decode().splitlines()
+
+	data =[]
+	for line in output:
+		parts = line.split("\t")
+		if len(parts)  == 4:
+			size,src,dst,delta = parts
+			data.append([size,src,dst,delta])
+
+	df = pd.DataFrame(data, columns =["packet_size","src_ip", "dst_ip","time_delta"])
+	return df
+
+normal = extract_features("normal_traffic.pcapng")
+dos= extract_features("dos_attack.pcapng")
+
+normal["label"] =0
+dos["label"]=1
+
+final_df = pd.concat([normal,dos], ignore_index =True)
+
+final_df.to_csv("iomt_dataset.csv",index=False)
+
+print(" Dataset created: iomt_dataset.csv")
+
